@@ -1,8 +1,6 @@
 import java.util.Random;
 import java.util.Scanner;
 
-import static java.lang.System.out;
-
 public class Main {
     public static void main(String[] args) {
         Game game = new Game();
@@ -12,34 +10,36 @@ public class Main {
 
 class Game {
     boolean isWin = false;
-    int mistakesLeft = 6;
-    String word = Words.getRandomWord();
-    StringBuilder hiddenWord = new StringBuilder();
+    int mistakesLeft = 7;
+
+    String word = Word.getRandom();
     String character = "";
+    StringBuilder hiddenWord;
 
     void startGame() {
-        hiddenWord = hideWord();
+        hiddenWord = Word.hide(word);
         Render.StartInfo();
 
         while (mistakesLeft > 0) {
-            out.println(word);
+            Render.gallows(mistakesLeft);
             Render.info(mistakesLeft, hiddenWord);
-            out.print("Input character: ");
+            System.out.print("Input character: ");
             character = Input.get();
             check(character);
 
             chekVictoryCondition();
 
+            Render.freeSpace();
+
             if (isWin) {
-                out.println();
-                out.println("CONGRATULATIONS YOU WIN !!!");
+                System.out.println("CONGRATULATIONS YOU WIN !!!");
                 break;
             }
         }
 
         if (!isWin) {
-            out.println();
-            out.println("You LOSE !");
+            Render.gallows(mistakesLeft);
+            System.out.println("You LOSE !");
         }
     }
 
@@ -53,6 +53,10 @@ class Game {
             }
         }
 
+        decreaseMistakes(isCharFounded);
+    }
+
+    private void decreaseMistakes(boolean isCharFounded) {
         if (!isCharFounded) {
             --mistakesLeft;
         }
@@ -62,10 +66,6 @@ class Game {
         if (word.contentEquals(hiddenWord)) {
             isWin = true;
         }
-    }
-
-    private StringBuilder hideWord() {
-        return hiddenWord.append("*".repeat(word.length()));
     }
 }
 
@@ -83,7 +83,7 @@ class Input {
                 chekedChar = input;
                 valid = true;
             } else {
-                out.println("Only 1 character !");
+                System.out.println("Only 1 character !");
             }
 
         } while (!valid);
@@ -92,7 +92,7 @@ class Input {
     }
 }
 
-class Words {
+class Word {
     private static final String[] nouns = {
             "apple", "banana", "car", "dog", "elephant", "fish", "guitar", "house", "ice", "jungle",
             "kite", "lion", "mountain", "night", "ocean", "piano", "queen", "river", "star", "tree",
@@ -131,22 +131,26 @@ class Words {
             "quartz", "robot", "straw", "violin", "window", "yak"
     };
 
-    static String getRandomWord() {
+    static String getRandom() {
         Random random = new Random();
         int randomIndex = random.nextInt(nouns.length);
         return nouns[randomIndex];
+    }
+
+    static StringBuilder hide(String word) {
+        return new StringBuilder().append("*".repeat(word.length()));
     }
 }
 
 class Render {
     static void info(int mistakes, StringBuilder wordToRender) {
-        out.println("Mistakes left: " + mistakes);
+        System.out.println("Mistakes left: " + mistakes);
         word(wordToRender);
     }
 
     static void StartInfo() {
-        out.println("Hello lets start the game !");
-        out.println();
+        System.out.println("Hello lets start the game !");
+        System.out.println();
     }
 
     static void word(StringBuilder word) {
@@ -157,11 +161,79 @@ class Render {
             hiddenWord.append("|").append(character).append("|");
         }
 
-        out.println(hiddenWord);
+        System.out.println(hiddenWord);
     }
 
-    // TODO: Finish
-    static void gallows() {
+    static void freeSpace() {
+        for (int i = 0; i < 100; i++) {
+            System.out.println();
+        }
+    }
 
+    static void gallows(int mistakesLeft) {
+        char[][] hangman = {
+                {' ', '_', '_', '_', '_', '_', '_', '_'},
+                {' ', '|', ' ', ' ', ' ', ' ', ' ', ' ', '|'},
+                {' ', '|', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+                {' ', '|', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+                {' ', '|', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+                {' ', '|', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+                {' ', '|'},
+                {'_', '|', '_', '_', '_', '_', '_', '_'}
+        };
+
+        switch (mistakesLeft) {
+            case 6:
+                hangman[2][8] = 'O';
+                break;
+            case 5:
+                hangman[2][8] = 'O';
+                hangman[3][7] = '/';
+                break;
+            case 4:
+                hangman[2][8] = 'O';
+                hangman[3][7] = '/';
+                hangman[3][8] = '|';
+                break;
+            case 3:
+                hangman[2][8] = 'O';
+                hangman[3][7] = '/';
+                hangman[3][8] = '|';
+                hangman[3][9] = '\\';
+                break;
+            case 2:
+                hangman[2][8] = 'O';
+                hangman[3][7] = '/';
+                hangman[3][8] = '|';
+                hangman[3][9] = '\\';
+                hangman[4][8] = '|';
+                break;
+            case 1:
+                hangman[2][8] = 'O';
+                hangman[3][7] = '/';
+                hangman[3][8] = '|';
+                hangman[3][9] = '\\';
+                hangman[4][8] = '|';
+                hangman[5][7] = '/';
+                break;
+            case 0:
+                hangman[2][8] = 'O';
+                hangman[3][7] = '/';
+                hangman[3][8] = '|';
+                hangman[3][9] = '\\';
+                hangman[4][8] = '|';
+                hangman[5][7] = '/';
+                hangman[5][9] = '\\';
+                break;
+            default:
+                break;
+        }
+
+        for (char[] chars : hangman) {
+            for (char aChar : chars) {
+                System.out.print(aChar);
+            }
+            System.out.println();
+        }
     }
 }
