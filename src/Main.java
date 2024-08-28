@@ -3,52 +3,62 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        Game game = new Game();
-        game.startGame();
+        boolean isRestarting ;
+
+        do {
+            Render.freeSpace();
+            Game game = new Game();
+            game.startGame();
+
+            System.out.print("Try again ? y/n: ");
+            isRestarting = Input.get().equals("y");
+        } while (isRestarting);
     }
 }
 
 class Game {
-    boolean isWin = false;
-    int mistakesLeft = 7;
-
-    String word = Word.getRandom();
-    String character = "";
-    StringBuilder hiddenWord;
+    Word word = new Word();
+    Status status = new Status();
 
     void startGame() {
-        hiddenWord = Word.hide(word);
         Render.StartInfo();
 
-        while (mistakesLeft > 0) {
-            Render.gallows(mistakesLeft);
-            Render.info(mistakesLeft, hiddenWord);
-            System.out.print("Input character: ");
-            character = Input.get();
-            check(character);
+        while (status.mistakesLeft > 0) {
+            Render.gallows(status.mistakesLeft);
+            Render.info(status.mistakesLeft, word.hidden);
 
-            chekVictoryCondition();
+            word.character = Input.get();
+
+            status.check(word.character, word);
+            status.chekVictoryCondition(word);
 
             Render.freeSpace();
 
-            if (isWin) {
-                System.out.println("CONGRATULATIONS YOU WIN !!!");
+            if (status.winCondition()) {
                 break;
             }
         }
 
-        if (!isWin) {
-            Render.gallows(mistakesLeft);
-            System.out.println("You LOSE !");
+        status.loseCondition();
+    }
+}
+
+class Status {
+    boolean isWin = false;
+    int mistakesLeft = 7;
+
+    void decreaseMistakes(boolean isCharFounded) {
+        if (!isCharFounded) {
+            --mistakesLeft;
         }
     }
 
-    private void check(String character) {
+    void check(String character, Word word) {
         boolean isCharFounded = false;
 
-        for (int i = 0; i < word.length(); i++) {
-            if (character.charAt(0) == word.charAt(i)) {
-                hiddenWord.replace(i, i + 1, character);
+        for (int i = 0; i < word.value.length(); i++) {
+            if (character.charAt(0) == word.value.charAt(i)) {
+                word.hidden.replace(i, i + 1, character);
                 isCharFounded = true;
             }
         }
@@ -56,15 +66,25 @@ class Game {
         decreaseMistakes(isCharFounded);
     }
 
-    private void decreaseMistakes(boolean isCharFounded) {
-        if (!isCharFounded) {
-            --mistakesLeft;
+    void chekVictoryCondition(Word word) {
+        if (word.value.contentEquals(word.hidden)) {
+            isWin = true;
         }
     }
 
-    private void chekVictoryCondition() {
-        if (word.contentEquals(hiddenWord)) {
-            isWin = true;
+    Boolean winCondition() {
+        if (isWin) {
+            System.out.println("CONGRATULATIONS YOU WIN !!!");
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    void loseCondition() {
+        if (!isWin) {
+            Render.gallows(mistakesLeft);
+            System.out.println("You LOSE !");
         }
     }
 }
@@ -77,13 +97,14 @@ class Input {
         String chekedChar = "";
 
         do {
-            String input = scanner.nextLine();
+            System.out.print("Input character: ");
+            String input = scanner.nextLine().toLowerCase();
 
             if (input.length() == 1) {
                 chekedChar = input;
                 valid = true;
             } else {
-                System.out.println("Only 1 character !");
+                System.out.println("Invalid character !");
             }
 
         } while (!valid);
@@ -93,7 +114,7 @@ class Input {
 }
 
 class Word {
-    private static final String[] nouns = {
+    private final String[] nouns = {
             "apple", "banana", "car", "dog", "elephant", "fish", "guitar", "house", "ice", "jungle",
             "kite", "lion", "mountain", "night", "ocean", "piano", "queen", "river", "star", "tree",
             "umbrella", "village", "whale", "xylophone", "yacht", "zebra", "actor", "bridge", "camera",
@@ -131,14 +152,24 @@ class Word {
             "quartz", "robot", "straw", "violin", "window", "yak"
     };
 
-    static String getRandom() {
+    String value;
+    String character;
+    StringBuilder hidden;
+
+    Word() {
+        value = getRandom();
+        character = "";
+        hidden = hide();
+    }
+
+    private String getRandom() {
         Random random = new Random();
         int randomIndex = random.nextInt(nouns.length);
         return nouns[randomIndex];
     }
 
-    static StringBuilder hide(String word) {
-        return new StringBuilder().append("*".repeat(word.length()));
+    private StringBuilder hide() {
+        return new StringBuilder().append("*".repeat(value.length()));
     }
 }
 
