@@ -1,6 +1,6 @@
 public class Main {
     public static void main(String[] args) {
-        boolean isRestarting ;
+        boolean isRestarting;
 
         do {
             Renderer.freeSpace();
@@ -10,7 +10,7 @@ public class Main {
 
             Renderer.askRestart();
 
-            isRestarting = Input.get().equals("y");
+            isRestarting = Input.getLetter().equals("y");
         } while (isRestarting);
     }
 }

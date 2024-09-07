@@ -1,19 +1,14 @@
 class GameStatus {
-    boolean isWin = false;
-    int attempts = 7;
+    private boolean isWin = false;
+    private int attempts = 7;
 
-    void decreaseMistakes(boolean isCharFounded) {
-        if (!isCharFounded) {
-            --attempts;
-        }
-    }
-
-    void check(String character, Word word) {
+    void checkLetter(String character, Word word) {
         boolean isCharFounded = false;
+        StringBuilder hiddenValue = word.getHiddenValue();
 
-        for (int i = 0; i < word.value.length(); i++) {
-            if (character.charAt(0) == word.value.charAt(i)) {
-                word.hidden.replace(i, i + 1, character);
+        for (int i = 0; i < word.getValue().length(); i++) {
+            if (character.charAt(0) == word.getValue().charAt(i)) {
+                hiddenValue.replace(i, i + 1, character);
                 isCharFounded = true;
             }
         }
@@ -21,8 +16,8 @@ class GameStatus {
         decreaseMistakes(isCharFounded);
     }
 
-    void chekVictoryCondition(Word word) {
-        if (word.value.contentEquals(word.hidden)) {
+    void checkVictoryCondition(Word word) {
+        if (word.getValue().contentEquals(word.getHiddenValue())) {
             isWin = true;
         }
     }
@@ -38,8 +33,18 @@ class GameStatus {
 
     void loseCondition() {
         if (!isWin) {
-            Renderer.gallows(attempts);
+            Renderer.displayGallows(attempts);
             System.out.println("You LOSE !");
+        }
+    }
+
+    int getAttemptsCount() {
+        return attempts;
+    }
+
+    private void decreaseMistakes(boolean isCharFounded) {
+        if (!isCharFounded) {
+            --attempts;
         }
     }
 }

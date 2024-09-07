@@ -1,15 +1,15 @@
 class Renderer {
-    static void info(int mistakes, StringBuilder wordToRender) {
+    static void displayInfo(int mistakes, StringBuilder wordToRender) {
         System.out.println("Mistakes left: " + mistakes);
-        word(wordToRender);
+        displayWord(wordToRender);
     }
 
-    static void StartInfo() {
+    static void displayStartInfo() {
         System.out.println("Hello lets start the game !");
         System.out.println();
     }
 
-    static void word(StringBuilder word) {
+    static void displayWord(StringBuilder word) {
         StringBuilder hiddenWord = new StringBuilder();
 
         for (int i = 0; i < word.length(); i++) {
@@ -27,7 +27,7 @@ class Renderer {
     }
 
     static void askRestart() {
-        System.out.print("Try again ? y/n: ");
+        System.out.println("Press y for restart");
     }
 
     static void inputChar() {
@@ -38,7 +38,7 @@ class Renderer {
         System.out.println("Invalid character !");
     }
 
-    static void gallows(int mistakesLeft) {
+    static void displayGallows(int attemptsLeft) {
         char[][] hangman = {
                 {' ', '_', '_', '_', '_', '_', '_', '_'},
                 {' ', '|', ' ', ' ', ' ', ' ', ' ', ' ', '|'},
@@ -50,7 +50,7 @@ class Renderer {
                 {'_', '|', '_', '_', '_', '_', '_', '_'}
         };
 
-        switch (mistakesLeft) {
+        switch (attemptsLeft) {
             case 6:
                 hangman[2][8] = 'O';
                 break;

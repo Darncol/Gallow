@@ -3,14 +3,14 @@ class Game {
     GameStatus gameStatus = new GameStatus();
 
     void startGame() {
-        Renderer.StartInfo();
+        Renderer.displayStartInfo();
 
-        while (gameStatus.attempts > 0) {
-            Renderer.gallows(gameStatus.attempts);
-            Renderer.info(gameStatus.attempts, word.hidden);
+        while (gameStatus.getAttemptsCount() > 0) {
+            Renderer.displayGallows(gameStatus.getAttemptsCount());
+            Renderer.displayInfo(gameStatus.getAttemptsCount(), word.getHiddenValue());
 
-            gameStatus.check(Input.get(), word);
-            gameStatus.chekVictoryCondition(word);
+            gameStatus.checkLetter(Input.getLetter(), word);
+            gameStatus.checkVictoryCondition(word);
 
             Renderer.freeSpace();
 

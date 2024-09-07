@@ -4,14 +4,21 @@ import java.util.Random;
 
 class Word {
     private final String[] nouns;
-
-    String value;
-    StringBuilder hidden;
+    private final String value;
+    private final StringBuilder hiddenValue;
 
     Word() {
         nouns = readWordsFromFile();
         value = getRandom();
-        hidden = hide();
+        hiddenValue = hide();
+    }
+
+    String getValue() {
+        return value;
+    }
+
+    StringBuilder getHiddenValue() {
+        return hiddenValue;
     }
 
     private String[] readWordsFromFile() {
