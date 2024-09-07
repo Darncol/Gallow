@@ -1,10 +1,10 @@
 class GameStatus {
     boolean isWin = false;
-    int mistakesLeft = 7;
+    int attempts = 7;
 
     void decreaseMistakes(boolean isCharFounded) {
         if (!isCharFounded) {
-            --mistakesLeft;
+            --attempts;
         }
     }
 
@@ -38,7 +38,7 @@ class GameStatus {
 
     void loseCondition() {
         if (!isWin) {
-            Render.gallows(mistakesLeft);
+            Renderer.gallows(attempts);
             System.out.println("You LOSE !");
         }
     }

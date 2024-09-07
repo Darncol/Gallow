@@ -8,14 +8,14 @@ class Input {
         String chekedChar = "";
 
         do {
-            Render.inputChar();
+            Renderer.inputChar();
             String input = scanner.nextLine().toLowerCase();
 
             if (input.length() == 1) {
                 chekedChar = input;
                 valid = true;
             } else {
-                Render.invalidChar();
+                Renderer.invalidChar();
             }
 
         } while (!valid);

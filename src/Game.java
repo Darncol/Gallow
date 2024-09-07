@@ -3,16 +3,16 @@ class Game {
     GameStatus gameStatus = new GameStatus();
 
     void startGame() {
-        Render.StartInfo();
+        Renderer.StartInfo();
 
-        while (gameStatus.mistakesLeft > 0) {
-            Render.gallows(gameStatus.mistakesLeft);
-            Render.info(gameStatus.mistakesLeft, word.hidden);
+        while (gameStatus.attempts > 0) {
+            Renderer.gallows(gameStatus.attempts);
+            Renderer.info(gameStatus.attempts, word.hidden);
 
             gameStatus.check(Input.get(), word);
             gameStatus.chekVictoryCondition(word);
 
-            Render.freeSpace();
+            Renderer.freeSpace();
 
             if (gameStatus.winCondition()) {
                 break;

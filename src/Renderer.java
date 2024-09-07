@@ -1,4 +1,4 @@
-class Render {
+class Renderer {
     static void info(int mistakes, StringBuilder wordToRender) {
         System.out.println("Mistakes left: " + mistakes);
         word(wordToRender);

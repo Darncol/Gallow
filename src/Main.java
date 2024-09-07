@@ -3,12 +3,12 @@ public class Main {
         boolean isRestarting ;
 
         do {
-            Render.freeSpace();
+            Renderer.freeSpace();
 
             Game game = new Game();
             game.startGame();
 
-            Render.askRestart();
+            Renderer.askRestart();
 
             isRestarting = Input.get().equals("y");
         } while (isRestarting);
